@@ -1,0 +1,199 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <cstring>
+#include "redpok.h"
+using namespace std;
+
+int broj_petorki=0;
+pac *podaci;
+int petorke(int *broj){
+    int n,pom;
+	srand(time(0));
+	bool pogr = false;
+	cout << "Unesite broj petorki kojeg zelite generirati:";
+	cin>> n;
+	podaci = new pac[n];
+	for(int i=0;i<n;i++){
+		podaci[i].ai = (rand()%(300+1-50))+50;
+		podaci[i].bi = (rand()%(300+1-50))+50;
+		podaci[i].ci = (rand()%(5+1-1))+1;
+		do{
+		    pogr = false;
+            pom = (rand()%(4+1-1))+1;
+            switch(pom){
+            case 2:
+                if(podaci[i].ci == 3)
+                    pogr = true;
+                break;
+            case 3:
+                if(podaci[i].ci == 1)
+                    pogr = true;
+                break;
+            }
+		}while(pogr);
+		podaci[i].di = pom;
+		do{
+            pogr = false;
+            pom = (rand()%(5+1-1))+1;
+            switch(pom){
+            case 1:
+                if(podaci[i].ci == 1)
+                    pogr = true;
+                break;
+            case 4:
+                if(podaci[i].ci == 4)
+                    pogr = true;
+                break;
+            case 5:
+                if(podaci[i].ci == 3)
+                    pogr = true;
+                break;
+            }
+		}while(pogr);
+		podaci[i].ei = pom;
+	}
+	*broj = n;
+	return n;
+}
+
+void dodaj(int broj,red *jedan){
+    pac p;
+    int j=0,i=0;
+    int ime=0;
+    int prezime=0;
+    bool ima= false;
+    red *pom = InitQ(pom);
+    string imena [] = {"Mario", "Marko", "Dario", "Ivan" , "Ivana", "Ana", "Marija", "Anamarija"} ;
+    string prezimena[] = {"Maric", "Markovic", "Ivic", "Anic", "Ivanovic", "Marijanovic"};
+    for(i=0;i<broj;i++){
+        for(j=0;j<3;j++){
+            ime = (rand()%(7+1-1))+1;
+            prezime = (rand()%(5+1-1))+1;
+            p.ime = imena[ime];
+            p.prezime = prezimena [prezime];
+            p.d = (rand()%(31+1-1))+1;
+            p.m = (rand()%(12+1-1))+1;
+            // rand()%(RAND_MAX - RAND_MIN - 1) + RAND_MIN
+            p.g = (rand()%(2013 - 1940 -1 )) + 1940;
+            if(ime>3)
+                    p.spol = 'z';
+            else
+                    p.spol = 'm';
+            p.ai = podaci[i].ai;
+            p.bi = podaci[i].bi;
+            p.ci = podaci[i].ci;
+            p.di = podaci[i].di;
+            p.ei = podaci[i].ei;
+            EnqueueQ(p,jedan);
+        }
+    }
+    cout << "Pacijentice starije od 25 godina koje idu na oftamologiju:" << endl;
+    while(!IsEmptyQ(jedan)){
+        p = FrontQ(jedan);
+        DequeueQ(jedan);
+        EnqueueQ(p,pom);
+    }
+    while(!IsEmptyQ(pom)){
+        p = FrontQ(pom);
+        DequeueQ(pom);
+        if(p.g<=1987 && p.spol == 'z' && p.ei == 2 ){
+           cout << "Pacijentica " << p.ime << " " << p.prezime << endl;
+           ima = true;
+        }
+        EnqueueQ(p,jedan);
+    }
+    if(ima==false) cout << endl << "Ne postoje takve pacijentice!" << endl;
+}
+
+
+void brisanje(red *jedan){
+    pac p;
+    bool pronadjen = false;
+    red *pomoc = InitQ(pomoc);
+    cout << "Pacijenti (invalidi) stariji od 50 godina koji cekaju na previjanje kod obiteljske medicine" << endl;
+    while(!IsEmptyQ(jedan)){
+        p = FrontQ(jedan);
+        DequeueQ(jedan);
+        EnqueueQ(p,pomoc);
+    }
+    while (!IsEmptyQ(pomoc)){
+        p = FrontQ(pomoc);
+        DequeueQ(pomoc);
+        if(p.g<=1963 && p.ci == 2 && p.di == 2 && p.ei == 1){
+            pronadjen = true;
+        }
+        else
+            EnqueueQ(p,jedan);
+    }
+    if(pronadjen) cout << "Pacijenti (invalidi) stariji od 50 godina koji cekaju na previjanje kod obiteljske medicine su obrisani." << endl;
+    if(!pronadjen) cout << "Nema takvih pacijenata." << endl;
+    cout << endl << "Cekaonica: " << endl;
+
+
+    }
+void ispis(red *jedan){
+    pac p;
+    red *pom = InitQ(pom);
+    while(!IsEmptyQ(jedan)){
+        p = FrontQ(jedan);
+        cout << p.ime << " " << p.prezime << " - " <<  p.d << "/" << p.m << "/" << p.g << " je " ;
+        cout << "prioriteta: ";
+        switch(p.ci){
+            case 1: cout << "Hitni slucaj. "; break;
+            case 2: cout << "Invalid. "; break;
+            case 3: cout << "Trudnica. "; break;
+            case 4: cout << "Dijete mlade od 6 godina. "; break;
+            case 5: cout << "Pacijent. "; break;
+        }
+        cout << endl << "Dosao/la: ";
+        switch(p.di){
+            case 1: cout << "na pregled. "; break;
+            case 2: cout << "na previjanje. "; break;
+            case 3: cout << "po recept. "; break;
+            case 4: cout << "po uputnicu. "; break;
+        }
+        cout << endl << "Ide na ";
+        switch(p.ei){
+            case 1: cout << "odjel obiteljske medicine."; break;
+            case 2: cout << "oftalmologiju."; break;
+            case 3: cout << "dermatovenerologiju."; break;
+            case 4: cout << "ginekologiju."; break;
+            case 5: cout << "urologiju."; break;
+        }
+        DequeueQ(jedan);
+        EnqueueQ(p,pom);
+        cout << endl << endl ;
+    }
+    while(!IsEmptyQ(pom)){
+        p = FrontQ(pom);
+        DequeueQ(pom);
+        EnqueueQ(p,jedan);
+    }
+}
+int main(){
+    red *jedan = InitQ(jedan);
+    int x;
+    int b=0;
+    int n=0;
+    do{
+            cout << "1. Generiranje brojeva. " << endl;
+            cout << "2. Upis podataka o pacijentima." << endl;
+            cout << "3. Brisanje svih invalida starijih od 50 godina koji cekaju na previjanje kod obiteljske medicine." << endl;
+            cin >> x;
+            switch(x){
+                case 1:
+                b = petorke(&broj_petorki);
+                break;
+                case 2:
+                dodaj(b,jedan);
+                break;
+                case 3:
+                brisanje(jedan);
+                ispis(jedan);
+            }
+
+     }while(x !=9);
+	system("pause");
+	return 0;
+}
