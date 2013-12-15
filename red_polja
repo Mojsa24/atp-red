@@ -1,0 +1,68 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+struct pac{
+    string ime,prezime;
+    char spol;
+    int ai,bi,ci,di,ei,d,m,g;
+};
+
+struct red{
+       pac pacijent[1000];
+       int front,rear;
+
+       };
+
+int AddOne(int i){
+    return ((i+1)%1000);
+    }
+
+pac FrontQ(red *jedan){
+
+    if(AddOne(jedan->rear)==jedan->front){
+       cout<<"Red je prazan!";
+         exit(0);
+         }
+    else{
+        return jedan->pacijent[jedan->front];
+         }
+    }
+
+void EnqueueQ(pac x,red *jedan){
+     if(AddOne(AddOne(jedan->rear))==jedan->front){
+
+     cout<<"Red je pun!";
+     exit(0);
+     }else
+           jedan->rear=AddOne(jedan->rear);
+           jedan->pacijent[jedan->rear]=x;
+     }
+
+void DequeueQ(red *jedan){
+
+     if(AddOne(jedan->rear)==jedan->front){
+     cout<<"Red je prazan!";
+           exit(0);
+     }
+     else{
+          jedan->front=AddOne(jedan->front);
+     }
+}
+
+red *InitQ(red *jedan){
+     jedan = new red;
+     jedan->rear=999;
+     jedan->front=0;
+     return jedan;
+     }
+
+
+int IsEmptyQ(red *jedan){
+
+if(AddOne(jedan->rear)!=jedan->front)
+    return 0;
+else
+    return (-1);
+    }
