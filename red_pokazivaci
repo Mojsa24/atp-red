@@ -1,0 +1,62 @@
+#include <iostream>
+
+using namespace std;
+
+typedef int element;
+
+struct pac{
+    string ime,prezime;
+    char spol;
+    int ai,bi,ci,di,ei,d,m,g;
+};
+struct red{
+       pac pacijenti;
+       red *slijedeci;
+       red *front,*rear;
+       };
+
+pac FrontQ(red *jedan){
+    if(jedan->rear!=jedan->front)
+  return jedan->front->slijedeci->pacijenti;
+    else{
+         cout<<"Red je prazan!";
+         exit(0);
+         }
+    }
+void EnqueueQ(pac x,red *jedan){
+
+    red *novi=new red;
+    novi->pacijenti=x;
+    novi->slijedeci=NULL;
+    jedan->rear->slijedeci=novi;
+    jedan->rear=novi;
+     }
+
+void DequeueQ(red *jedan){
+
+red *brisani=new red;
+  if(jedan->rear!=jedan->front){
+  brisani=jedan->front;
+  jedan->front=brisani->slijedeci;
+  delete brisani;
+  }else{
+        cout<<"Red je prazan!";
+        exit(0);
+        }
+     }
+
+red *InitQ(red *jedan){
+     jedan = new red;
+     red*novi=new red;
+     jedan->rear=novi;
+     jedan->front=novi;
+     novi->slijedeci=NULL;
+     return jedan;
+     }
+
+int IsEmptyQ(red *jedan){
+    if(jedan->front==jedan->rear)
+    return (-1);
+    else
+    return 0;
+    }
